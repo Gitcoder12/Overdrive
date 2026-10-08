@@ -2,6 +2,7 @@
 Overdrive configuration.
 
 Loads environment variables with validation.
+Supports multiple LLM providers via LLM_PROVIDER.
 """
 
 from __future__ import annotations
@@ -22,15 +23,29 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    anthropic_api_key: str = Field(..., description="Anthropic API key")
-    anthropic_model: str = Field(
-        default="claude-sonnet-4-20250514",
-        description="Claude model to use",
+    # Which provider to use
+    llm_provider: str = Field(
+        default="anthropic",
+        description="anthropic | openai | google | groq | ollama",
+    )
+    llm_model: str = Field(
+        default="",
+        description="Model name; empty = provider default",
     )
     max_tokens: int = Field(default=2000, ge=100, le=8000)
-    app_name: str = Field(default="Overdrive")
-    app_version: str = Field(default="0.1.0")
-    debug: bool = Field(default=False)
+
+    # Provider API keys (only one needed, based on llm_provider)
+    anthropic_api_key: str | None = None
+    openai_api_key: str | None = None
+    google_api_key: str | None = None
+    groq_api_key: str | None = None
+
+    # Ollama (local)
+    ollama_base_url: str = "http://localhost:11434"
+
+    app_name: str = "Overdrive"
+    app_version: str = "0.1.0"
+    debug: bool = False
 
 
 @lru_cache(maxsize=1)
