@@ -22,13 +22,13 @@ def test_health() -> None:
 
 
 def test_analyze_validation_short_process() -> None:
-    """Process under 10 chars fails validation."""
+    """Process under 10 chars fails validation with 422."""
     response = client.post("/analyze", json={"process": "hi"})
     assert response.status_code == 422
 
 
 def test_analyze_validation_missing_process() -> None:
-    """Missing process field fails validation."""
+    """Missing process field fails validation with 422."""
     response = client.post("/analyze", json={})
     assert response.status_code == 422
 
@@ -57,7 +57,7 @@ def test_analyze_success(mock_get_provider: MagicMock) -> None:
     mock_get_provider.return_value = fake_llm
 
     payload = {
-        "process": "Order fulfillment: order → inventory → pick → ship",
+        "process": "Order fulfillment: order to inventory to pick to ship",
         "data": {"avg_hrs": 4.2},
     }
     response = client.post("/analyze", json=payload)
@@ -77,6 +77,6 @@ def test_analyze_invalid_json_from_llm(mock_get_provider: MagicMock) -> None:
     fake_llm.complete.return_value = "Sorry, I can't help with that."
     mock_get_provider.return_value = fake_llm
 
-    payload = {"process": "Order fulfillment: order → inventory → ship"}
+    payload = {"process": "Order fulfillment: order to inventory to ship"}
     response = client.post("/analyze", json=payload)
     assert response.status_code == 500
