@@ -89,17 +89,6 @@ Rules:
 """
 
 
-def get_llm(settings: Settings = Depends(get_settings)) -> LLMProvider:
-    """Dependency: return active LLM provider."""
-    try:
-        return get_provider(settings)
-    except ValueError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=str(exc),
-        ) from exc
-
-
 # ---------- Endpoints ----------
 
 @app.get("/health")
@@ -120,9 +109,17 @@ def health(settings: Settings = Depends(get_settings)) -> dict[str, str]:
 def analyze(
     req: AnalyzeRequest,
     settings: Settings = Depends(get_settings),
-    llm: LLMProvider = Depends(get_llm),
 ) -> AnalyzeResponse:
     """Analyze a process with the configured LLM provider."""
+
+    # Initialize LLM AFTER request validation passes
+    try:
+        llm: LLMProvider = get_provider(settings)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(exc),
+        ) from exc
 
     user_message = f"Process:\n{req.process}"
     if req.data:
