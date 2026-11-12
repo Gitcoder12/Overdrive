@@ -85,7 +85,7 @@ The API returns a structured response containing `provider`, `summary`, and `bot
 
 The settings layer supports provider selection through `LLM_PROVIDER`, optional model selection through `LLM_MODEL`, and a response token limit through `MAX_TOKENS`. Provider credentials are supplied through environment variables; never commit API keys or real customer/industrial data.
 
-The codebase includes provider configuration for Anthropic, OpenAI, Google, Groq, DeepSeek, OpenRouter, and local Ollama. Availability depends on the installed provider implementation and valid configuration. Consult `app/config.py` and `app/llm/` for the current source of truth.
+The provider factory currently implements Anthropic, OpenAI, Google Gemini, Groq, and local Ollama adapters. Although settings fields exist for DeepSeek and OpenRouter, those providers are not registered in the runtime factory yet. Consult `app/llm/base.py`, `app/llm/providers.py`, and `app/config.py` for the current source of truth.
 
 ## Response interpretation and limitations
 
