@@ -53,7 +53,7 @@ uvicorn app.main:app --reload
 
 ## Try the interactive demo
 
-<badge>Local interactive API demo</badge>
+**Local interactive API demo**
 
 Open [Swagger UI](http://127.0.0.1:8000/docs) after starting the server. This is a local demo URL, not a hosted public deployment.
 
