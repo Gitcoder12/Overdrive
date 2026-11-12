@@ -1,79 +1,124 @@
 # Overdrive
-### Universal Process Optimization & Field Intelligence Engine
 
-Overdrive is an AI-driven research and engineering platform designed to analyze, optimize, and improve any process—whether real or virtual, physical or digital. It operates on a continuous feedback loop, using multi-agent swarms, digital twin simulation, and advanced algorithms to turn complex, inefficient systems into highly optimized operations.
+**LLM-assisted process analysis for operational bottlenecks.**
 
-## Executive Summary (TL;DR)
-Overdrive is a universal optimization engine. If a system has a process, Overdrive can improve it. It ingests data from physical factories, digital software pipelines, or abstract business workflows, detects bottlenecks, simulates solutions, and executes actionable improvements. It is modular, domain-agnostic, and built for systemic efficiency.
+Overdrive is an early-stage FastAPI service that accepts a process description and optional structured data, sends them to a configured language-model provider, and returns ranked bottlenecks with proposed fixes and model-reported confidence.
 
----
+> **Current implementation, stated plainly:** Overdrive is an LLM-backed analysis API. The repository does not yet implement the multi-agent swarm, digital twin, industrial telemetry ingestion, actuator execution, or automatic rollback described in earlier concept material. Those remain possible research directions, not shipped capabilities.
 
-## The Overdrive Philosophy (Any Process, Any Domain)
-Overdrive is built on the belief that the fundamental mechanics of optimization are universal. Whether you are trying to reduce defects on an assembly line, lower API latency in a microservice architecture, or reduce patient wait times in a hospital, the core loop remains the same:
+## What works today
 
-1. **Observe:** Ingest telemetry, logs, sensor data, and process metrics.
-2. **Investigate:** Detect patterns, anomalies, and root causes of inefficiencies.
-3. **Reason:** Generate hypotheses using AI models, agent swarms, and graph algorithms.
-4. **Optimize:** Simulate solutions (via Digital Twin) to find the best path forward.
-5. **Act:** Implement changes via physical actuators, software APIs, or operational workflows.
-6. **Evaluate:** Measure the real-world impact of the changes.
-7. **Improve:** Feed the results back into the system to optimize the next cycle.
-*(Repeat: Continuous autonomous feedback loop.)*
+- `GET /health` — reports service health and the configured provider name.
+- `POST /analyze` — submits a process description and optional JSON data for bottleneck analysis.
+- Provider abstraction — provider selection is configured through environment settings.
+- Structured response — returns provider name, a summary, and ranked bottleneck records.
+- Non-blocking API execution — synchronous provider calls are dispatched through FastAPI's thread pool.
+- Input validation — process descriptions are constrained to 10–5,000 characters; reported confidence must be between 0 and 1.
 
-## Universal Use Cases
-- **Physical Systems (Industrial IoT):** Optimize factory assembly lines, reduce machine downtime, manage energy consumption, and predict maintenance.
-- **Virtual Systems (Software & Cloud):** Profile codebases, eliminate database bottlenecks, optimize network routing, and balance cloud load.
-- **Hybrid Systems (Supply Chain & Logistics):** Optimize shipping routes, warehouse layouts, and real-time inventory distribution.
-- **Abstract Systems (Business Operations):** Analyze hospital patient flow, streamline customer support ticket routing, and optimize financial workflows.
+## Quickstart
 
-## Core Architecture & Features
-- **Field Intelligence:** Ingests and normalizes raw, multi-modal data (sensor data, SQL, logs, APIs) into a unified representation.
-- **Digital Twin Simulation:** Builds a virtual replica of the physical or digital process to test hypotheses safely before executing them in reality.
-- **Agent Swarm Reasoning:** Deploys specialized AI agents (Efficiency, Quality, Risk, Logistics) to debate and propose the best optimization strategy.
-- **Universal Actuators:** Executes changes across domains (e.g., sending MQTT commands to a PLC, triggering a Git commit, or calling a REST API).
-- **Failsafe Validation:** Every change is measured against a baseline. If an optimization degrades performance or breaks a constraint, it is instantly rolled back.
+Requirements: Python 3.11 or newer.
 
-## Design Principles
-- **Iterative:** Builds incrementally. No full system shutdowns or complete rewrites are required.
-- **Reliable:** Focuses on reproducible, measurable improvements with strict baseline metrics.
-- **Domain-Agnostic:** Uses the right tool for the job—whether that is classical Operations Research, Machine Learning, or Autonomous Agents.
+```bash
+git clone https://github.com/Gitcoder12/Overdrive.git
+cd Overdrive
 
----
+python -m venv .venv
+# Windows PowerShell:
+.venv\Scripts\Activate.ps1
+# macOS / Linux:
+source .venv/bin/activate
 
-## How to Use It
-**1. Define the System & Objective**
-Start with a specific target (e.g., "Why is our factory defect rate at 5%?" or "Why is our API response time spiking?").
+python -m pip install --upgrade pip
+pip install -e ".[dev]"
+```
 
-**2. Run Overdrive**
-Deploy the engine to ingest data, map the process, and detect inefficiencies.
+Configure a provider using environment variables. For example, with Anthropic:
 
-**3. Evaluate & Act**
-Review the optimized solutions. Apply the changes via physical controls, software deployments, or human operators.
+```bash
+# macOS / Linux
+export LLM_PROVIDER=anthropic
+export ANTHROPIC_API_KEY="your-api-key"
 
-**4. Iterate**
-Feed the new performance metrics back into the engine to improve the next cycle.
+# Windows PowerShell
+$env:LLM_PROVIDER = "anthropic"
+$env:ANTHROPIC_API_KEY = "your-api-key"
+```
 
-## Tech Stack
-- **AI & Reasoning:** LLMs, Multi-Agent Swarms, Reinforcement Learning.
-- **Data & Processing:** Time-Series Databases, Graph Algorithms, Operations Research.
-- **Integration:** IoT Protocols (MQTT, OPC-UA), REST/GraphQL APIs, Git.
-- **Focus:** Systemic efficiency, throughput, and structural integrity.
+Then start the API:
 
----
+```bash
+uvicorn app.main:app --reload
+```
 
-## Research & Development
+## Try the interactive demo
 
-### Key Questions Driving the Project
-- Can AI automatically detect physical or systemic inefficiencies without human intervention?
-- Can it generate, simulate, and validate solutions autonomously?
-- How can the system improve over time across entirely different domains using the same core loop?
+<badge>Local interactive API demo</badge>
 
-### Next Steps
-- Start with small, controlled experiments (e.g., analyze a simulated factory floor or a specific software pipeline).
-- Replicate results to prove effectiveness and domain-agnostic reliability.
-- Expand to larger, more complex real-world systems.
+Open [Swagger UI](http://127.0.0.1:8000/docs) after starting the server. This is a local demo URL, not a hosted public deployment.
 
----
-## Author & License
-**Author:** Dharavath Satvik
-**License:** Apache License 2.0
+Health check:
+
+```bash
+curl http://127.0.0.1:8000/health
+```
+
+Analyze a process:
+
+```bash
+curl -X POST http://127.0.0.1:8000/analyze \
+  -H "Content-Type: application/json" \
+  -d '{
+    "process": "A small manufacturing line has rising rework and late orders. Operators wait for inspection results, and two machines frequently become bottlenecks.",
+    "data": {
+      "daily_units": 800,
+      "rework_rate": 0.08,
+      "on_time_delivery": 0.84,
+      "inspection_wait_minutes": 37
+    }
+  }'
+```
+
+The API returns a structured response containing `provider`, `summary`, and `bottlenecks`. Exact output depends on the configured model and supplied process information.
+
+## Configuration
+
+The settings layer supports provider selection through `LLM_PROVIDER`, optional model selection through `LLM_MODEL`, and a response token limit through `MAX_TOKENS`. Provider credentials are supplied through environment variables; never commit API keys or real customer/industrial data.
+
+The codebase includes provider configuration for Anthropic, OpenAI, Google, Groq, DeepSeek, OpenRouter, and local Ollama. Availability depends on the installed provider implementation and valid configuration. Consult `app/config.py` and `app/llm/` for the current source of truth.
+
+## Response interpretation and limitations
+
+- Bottlenecks and proposed fixes are model-generated suggestions, not verified root causes.
+- `roi_estimate` is text generated by the model; it is not a measured financial forecast.
+- `confidence` is a model-reported value, not a calibrated probability of correctness.
+- The API does not currently execute changes, connect to PLCs, ingest live telemetry, run a digital twin, or prove that a proposed intervention improves a real process.
+- Validate recommendations with domain experts, operational constraints, controlled trials, and measured before/after metrics before acting on them.
+- Do not submit confidential, regulated, or safety-critical operational data to an external model without appropriate authorization and controls.
+
+## Development
+
+```bash
+pytest
+ruff check .
+ruff format --check .
+mypy app
+```
+
+These commands are the intended local quality checks. A command listed here is not evidence that it has passed; inspect the current CI run before treating a revision as validated.
+
+## Roadmap
+
+1. Add deterministic baseline analysis and a reproducible benchmark dataset.
+2. Add evidence references and explicit separation between observed facts, hypotheses, and recommendations.
+3. Evaluate output quality against human-labelled bottlenecks.
+4. Add scenario simulation only when its assumptions and validation protocol are documented.
+5. Consider controlled integrations with external systems only after authorization, audit logging, dry-run mode, and rollback safeguards exist.
+
+## Repository
+
+- Source: [GitHub](https://github.com/Gitcoder12/Overdrive)
+- API contract: `/openapi.json` when running locally
+- Interactive local demo: [Swagger UI](http://127.0.0.1:8000/docs)
+
+**License:** Apache-2.0
