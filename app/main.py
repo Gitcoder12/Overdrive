@@ -10,8 +10,7 @@ from __future__ import annotations
 
 import json
 import logging
-import re
-from typing import Any
+from typing import Any, Literal
 
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.concurrency import run_in_threadpool
@@ -38,9 +37,9 @@ class AnalyzeRequest(BaseModel):
 
 class Bottleneck(BaseModel):
     """A single ranked bottleneck."""
-    rank: int
+    rank: int = Field(ge=1)
     name: str
-    severity: str
+    severity: Literal["high", "medium", "low"]
     root_cause: str
     fix: str
     roi_estimate: str
@@ -50,8 +49,8 @@ class Bottleneck(BaseModel):
 class AnalyzeResponse(BaseModel):
     """Response payload for /analyze."""
     provider: str
-    bottlenecks: list[Bottleneck]
-    summary: str
+    bottlenecks: list[Bottleneck] = Field(min_length=3, max_length=7)
+    summary: str = Field(min_length=1)
 
 
 # ---------- Prompt ----------
@@ -113,9 +112,10 @@ async def analyze(
     try:
         llm: LLMProvider = get_provider(settings)
     except ValueError as exc:
+        logger.warning("LLM provider configuration is unavailable: %s", exc)
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=str(exc),
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="The configured LLM provider is unavailable or incorrectly configured.",
         ) from exc
 
     # 2. Build Prompt (Sanitized)
@@ -129,43 +129,49 @@ async def analyze(
         # We run the synchronous LLM call in a separate thread so it doesn't block FastAPI
         text = await run_in_threadpool(llm.complete, SYSTEM_PROMPT, user_message, settings.max_tokens)
     except Exception as exc:
-        logger.exception("LLM call failed")
+        logger.exception("LLM call failed for provider %s", llm.name)
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=f"LLM error ({llm.name}): {exc}",
+            detail="The configured LLM provider request failed.",
         ) from exc
 
-    # 4. Robust JSON Extraction
-    # Instead of regex, we use the JSON Decoder to find the first valid JSON object.
+    # 4. Parse and validate the provider response.
+    if not isinstance(text, str):
+        logger.error("LLM provider %s returned a non-text response", llm.name)
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="The LLM provider returned a non-text response.",
+        )
+
+    start_idx = text.find("{")
+    if start_idx == -1:
+        logger.error("LLM provider %s returned no JSON object", llm.name)
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="The LLM provider returned no JSON object.",
+        )
+
     try:
-        # Find the first '{' and try to decode from there
-        start_idx = text.find('{')
-        if start_idx == -1:
-            raise ValueError("No JSON object found in response")
-            
         parsed, _ = json.JSONDecoder().raw_decode(text[start_idx:])
-        
     except json.JSONDecodeError as exc:
-        logger.error(f"Invalid JSON from {llm.name}: {text[:200]}")
+        logger.warning("LLM provider %s returned invalid JSON: %s", llm.name, exc)
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Invalid JSON from {llm.name}: {exc}",
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="The LLM provider returned malformed JSON.",
         ) from exc
 
-    # 5. Parse and Validate
+    if not isinstance(parsed, dict):
+        logger.warning("LLM provider %s returned JSON with an invalid top-level type", llm.name)
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="The LLM provider response must be a JSON object.",
+        )
+
     try:
-        raw_bottlenecks = parsed.get("bottlenecks", [])
-        bottlenecks = [Bottleneck(**b) for b in raw_bottlenecks]
-        summary = parsed.get("summary", "")
-    except Exception as exc:
-        logger.error(f"Pydantic validation failed for LLM output: {exc}")
+        return AnalyzeResponse.model_validate({**parsed, "provider": llm.name})
+    except (TypeError, ValueError) as exc:
+        logger.warning("LLM provider %s returned an invalid response schema: %s", llm.name, exc)
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="LLM returned JSON that did not match the required schema.",
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="The LLM provider response did not match the required schema.",
         ) from exc
-
-    return AnalyzeResponse(
-        provider=llm.name,
-        bottlenecks=bottlenecks,
-        summary=summary,
-    )
