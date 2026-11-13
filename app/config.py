@@ -15,6 +15,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 logger = logging.getLogger("Overdrive.Config")
 
+
 class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
 
@@ -53,7 +54,7 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def validate_api_keys(self) -> Settings:
-        """Ensure the selected provider has an API key before starting."""
+        """Warn when a configured remote provider is missing its API key."""
         provider = self.llm_provider.lower()
 
         key_map = {
