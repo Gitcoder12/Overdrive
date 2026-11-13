@@ -8,7 +8,7 @@ from typing import Any, Literal
 
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.concurrency import run_in_threadpool
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from app.config import Settings, get_settings
 from app.llm import LLMProvider, get_provider
@@ -30,6 +30,14 @@ class AnalyzeRequest(BaseModel):
     process: str = Field(min_length=10, max_length=5000)
     data: dict[str, Any] | None = None
 
+    @field_validator("process")
+    @classmethod
+    def process_must_contain_text(cls, value: str) -> str:
+        normalized = value.strip()
+        if len(normalized) < 10:
+            raise ValueError("process must contain at least 10 non-whitespace characters")
+        return normalized
+
 
 class Bottleneck(BaseModel):
     """A single ranked bottleneck returned by the model."""
@@ -44,6 +52,14 @@ class Bottleneck(BaseModel):
     roi_estimate: str = Field(min_length=1, max_length=160)
     confidence: float = Field(ge=0.0, le=1.0, strict=True)
 
+    @field_validator("name", "root_cause", "fix", "roi_estimate")
+    @classmethod
+    def required_text_must_not_be_blank(cls, value: str) -> str:
+        normalized = value.strip()
+        if not normalized:
+            raise ValueError("text fields must not be blank")
+        return normalized
+
 
 class AnalyzeResponse(BaseModel):
     """Validated response payload for /analyze."""
@@ -53,6 +69,14 @@ class AnalyzeResponse(BaseModel):
     provider: str = Field(min_length=1)
     bottlenecks: list[Bottleneck] = Field(min_length=3, max_length=7)
     summary: str = Field(min_length=1, max_length=2000)
+
+    @field_validator("summary")
+    @classmethod
+    def summary_must_not_be_blank(cls, value: str) -> str:
+        normalized = value.strip()
+        if not normalized:
+            raise ValueError("summary must not be blank")
+        return normalized
 
     @model_validator(mode="after")
     def validate_bottleneck_ranks(self) -> AnalyzeResponse:
