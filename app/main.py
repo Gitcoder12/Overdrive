@@ -183,6 +183,13 @@ async def analyze(
             detail="The LLM provider returned no JSON object.",
         )
 
+    if text[:start_idx].strip():
+        logger.warning("LLM provider %s returned leading non-JSON content", llm.name)
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="The LLM provider response must contain only one JSON object.",
+        )
+
     try:
         parsed, end_idx = json.JSONDecoder().raw_decode(text[start_idx:])
     except json.JSONDecodeError as exc:
