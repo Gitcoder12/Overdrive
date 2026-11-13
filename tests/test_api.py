@@ -78,6 +78,10 @@ def test_analyze_validation_missing_process() -> None:
     assert client.post("/analyze", json={}).status_code == 422
 
 
+def test_analyze_validation_whitespace_process() -> None:
+    assert client.post("/analyze", json={"process": "          "}).status_code == 422
+
+
 @patch("app.main.get_provider")
 def test_analyze_success(mock_get_provider: MagicMock) -> None:
     fake_llm = MagicMock()
@@ -124,8 +128,12 @@ def test_analyze_rejects_invalid_provider_output(provider_output: object) -> Non
         "duplicate_rank",
         "descending_ranks",
         "too_few",
+        "too_many",
         "empty_summary",
         "empty_name",
+        "empty_root_cause",
+        "empty_fix",
+        "empty_roi_estimate",
         "invalid_severity",
         "negative_rank",
         "extra_field",
@@ -140,10 +148,18 @@ def test_analyze_rejects_invalid_response_schema(mutation: str) -> None:
         payload["bottlenecks"][2]["rank"] = 1
     elif mutation == "too_few":
         payload["bottlenecks"] = payload["bottlenecks"][:2]
+    elif mutation == "too_many":
+        payload["bottlenecks"] = payload["bottlenecks"] * 3
     elif mutation == "empty_summary":
         payload["summary"] = " "
     elif mutation == "empty_name":
         payload["bottlenecks"][0]["name"] = ""
+    elif mutation == "empty_root_cause":
+        payload["bottlenecks"][0]["root_cause"] = " "
+    elif mutation == "empty_fix":
+        payload["bottlenecks"][0]["fix"] = " "
+    elif mutation == "empty_roi_estimate":
+        payload["bottlenecks"][0]["roi_estimate"] = " "
     elif mutation == "invalid_severity":
         payload["bottlenecks"][0]["severity"] = "urgent"
     elif mutation == "negative_rank":
