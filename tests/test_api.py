@@ -112,6 +112,7 @@ def test_analyze_success(mock_get_provider: MagicMock) -> None:
         "{not valid json}",
         "[]",
         _valid_completion() + " trailing text",
+        "Here is the result: " + _valid_completion(),
         123,
         {"bottlenecks": "not a list"},
     ],
