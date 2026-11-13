@@ -77,3 +77,12 @@ Feed the new performance metrics back into the engine to improve the next cycle.
 ## Author & License
 **Author:** Dharavath Satvik
 **License:** Apache License 2.0
+
+---
+
+## Project handbook
+
+- [Activity log](ACTIVITY_LOG.md) · [Feature upgrade plan](FEATURE_UPGRADE_PLAN.md)
+- [Company and team fit](COMPANY_FIT.md) · [README explanation draft](README_ADDENDUM_DRAFT.md)
+- [README quality checklist](README_QUALITY_CHECKLIST.md)
+- [Contributing](CONTRIBUTING.md) · [Agent instructions](AGENTS.md) · [Agent skills](SKILLS.md)
