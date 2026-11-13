@@ -17,3 +17,12 @@ The README describes a broad optimization and field-intelligence concept involvi
 | YYYY-MM-DD | name | link | exact paths | dataset, seed, config | pass / fail / not run | metrics and caveats |
 
 Record objectives, constraints, baseline, random seeds, configurations and measured outcomes. Never claim a universal optimisation capability based on a single example.
+
+## Portfolio documentation rollout — 2026-11-13
+
+- Documentation PR: https://github.com/Gitcoder12/Overdrive/pull/7
+- Added project-specific feature plan, company-fit mapping, two-level README guide and quality checklist.
+- Existing agent/contributor instructions were preserved or extended without replacing the repository's established policies.
+- README now includes a beginner explanation and a technical/research view tied to current scope and limitations.
+- Validation: documentation/source review only; no application runtime test or deployment is claimed by this docs PR.
+- Status: draft PR, not merged.
