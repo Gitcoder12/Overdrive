@@ -7,8 +7,8 @@ Supports multiple LLM providers via LLM_PROVIDER.
 
 from __future__ import annotations
 
-from functools import lru_cache
 import logging
+from functools import lru_cache
 
 from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -57,7 +57,7 @@ class Settings(BaseSettings):
     def validate_api_keys(self) -> Settings:
         """Ensure the selected provider has an API key before starting."""
         provider = self.llm_provider.lower()
-        
+
         key_map = {
             "anthropic": self.anthropic_api_key,
             "openai": self.openai_api_key,
@@ -67,10 +67,12 @@ class Settings(BaseSettings):
             "openrouter": self.openrouter_api_key,
         }
 
-        if provider != "ollama" and provider in key_map:
-            if not key_map[provider]:
-                logger.warning(f"Missing API key for selected provider: {provider.upper()}. Overdrive will fall back to MockProvider if available.")
-        
+        if provider != "ollama" and provider in key_map and not key_map[provider]:
+            logger.warning(
+                "Missing API key for selected provider: %s. Provider requests will be unavailable.",
+                provider.upper(),
+            )
+
         return self
 
 
