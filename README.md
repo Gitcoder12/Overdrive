@@ -1,124 +1,253 @@
-# Overdrive
+Overdrive
 
-**LLM-assisted process analysis for operational bottlenecks.**
+An AI-powered field intelligence and optimization engine that investigates complex systems, identifies problems and inefficiencies, and develops actionable solutions.
 
-Overdrive is an early-stage FastAPI service that accepts a process description and optional structured data, sends them to a configured language-model provider, and returns ranked bottlenecks with proposed fixes and model-reported confidence.
+---
 
-> **Current implementation, stated plainly:** Overdrive is an LLM-backed analysis API. The repository does not yet implement the multi-agent swarm, digital twin, industrial telemetry ingestion, actuator execution, or automatic rollback described in earlier concept material. Those remain possible research directions, not shipped capabilities.
+WHAT IT IS
 
-## What works today
+Overdrive is a research and engineering platform for building intelligent systems that investigate complex environments and help determine how those systems can be understood, improved, and optimized.
 
-- `GET /health` — reports service health and the configured provider name.
-- `POST /analyze` — submits a process description and optional JSON data for bottleneck analysis.
-- Provider abstraction — provider selection is configured through environment settings.
-- Structured response — returns provider name, a summary, and ranked bottleneck records.
-- Non-blocking API execution — synchronous provider calls are dispatched through FastAPI's thread pool.
-- Input validation — process descriptions are constrained to 10–5,000 characters; reported confidence must be between 0 and 1.
+It serves two roles:
 
-## Quickstart
+- An engineering repository — software, algorithms, experiments, tools.
+- A research platform — where new methods for intelligence, reasoning, and optimization are developed and evaluated.
 
-Requirements: Python 3.11 or newer.
+The repository is the implementation. The experiments are the research. The results become evidence.
 
-```bash
-git clone https://github.com/Gitcoder12/Overdrive.git
-cd Overdrive
+---
 
-python -m venv .venv
-# Windows PowerShell:
-.venv\Scripts\Activate.ps1
-# macOS / Linux:
-source .venv/bin/activate
+CORE IDEA
 
-python -m pip install --upgrade pip
-pip install -e ".[dev]"
-```
+Observe → Investigate → Understand → Reason → Optimize → Act → Evaluate → Improve
 
-Configure a provider using environment variables. For example, with Anthropic:
+---
 
-```bash
-# macOS / Linux
-export LLM_PROVIDER=anthropic
-export ANTHROPIC_API_KEY="your-api-key"
+CORE QUESTIONS
 
-# Windows PowerShell
-$env:LLM_PROVIDER = "anthropic"
-$env:ANTHROPIC_API_KEY = "your-api-key"
-```
+1. What is happening?
+2. Why is it happening?
+3. What can be improved?
+4. What should happen next?
 
-Then start the API:
+---
 
-```bash
-uvicorn app.main:app --reload
-```
+INTELLIGENCE PIPELINE
 
-## Try the interactive demo
+Complex System
+      ↓
+   Observe
+      ↓
+   Analyze
+      ↓
+ Detect Problems
+      ↓
+ Investigate
+      ↓
+   Reason
+      ↓
+    Plan
+      ↓
+  Optimize
+      ↓
+Develop Solution
+      ↓
+    Act
+      ↓
+  Evaluate
+      ↓
+   Learn
+      ↓
+  Improve
+      ↺
 
-**Local interactive API demo**
+Not every problem requires every stage. Overdrive uses the right combination of algorithms, models, agents, and methods for each problem.
 
-Open [Swagger UI](http://127.0.0.1:8000/docs) after starting the server. This is a local demo URL, not a hosted public deployment.
+---
 
-Health check:
+CAPABILITIES
 
-```bash
-curl http://127.0.0.1:8000/health
-```
+Field Intelligence
+Observe complex systems. Transform raw observations into useful representations.
 
-Analyze a process:
+System Investigation
+Identify relationships, generate hypotheses, search for causes.
 
-```bash
-curl -X POST http://127.0.0.1:8000/analyze \
-  -H "Content-Type: application/json" \
-  -d '{
-    "process": "A small manufacturing line has rising rework and late orders. Operators wait for inspection results, and two machines frequently become bottlenecks.",
-    "data": {
-      "daily_units": 800,
-      "rework_rate": 0.08,
-      "on_time_delivery": 0.84,
-      "inspection_wait_minutes": 37
-    }
-  }'
-```
+Problem Detection
+Inefficiencies, anomalies, bottlenecks, failures, risks, resource waste, performance degradation.
 
-The API returns a structured response containing `provider`, `summary`, and `bottlenecks`. Exact output depends on the configured model and supplied process information.
+Reasoning
+Combine AI models, algorithms, structured reasoning, data analysis, and experimentation.
 
-## Configuration
+Optimization
+Resources, scheduling, routing, configuration, cost, energy, reliability, multi-objective trade-offs.
 
-The settings layer supports provider selection through `LLM_PROVIDER`, optional model selection through `LLM_MODEL`, and a response token limit through `MAX_TOKENS`. Provider credentials are supplied through environment variables; never commit API keys or real customer/industrial data.
+Planning
+Develop possible courses of action based on current state and objectives.
 
-The provider factory currently implements Anthropic, OpenAI, Google Gemini, Groq, and local Ollama adapters. Although settings fields exist for DeepSeek and OpenRouter, those providers are not registered in the runtime factory yet. Consult `app/llm/base.py`, `app/llm/providers.py`, and `app/config.py` for the current source of truth.
+Action
+Transform recommendations into executable actions or system changes.
 
-## Response interpretation and limitations
+Evaluation
+Measure whether an action actually improves the system.
 
-- Bottlenecks and proposed fixes are model-generated suggestions, not verified root causes.
-- `roi_estimate` is text generated by the model; it is not a measured financial forecast.
-- `confidence` is a model-reported value, not a calibrated probability of correctness.
-- The API does not currently execute changes, connect to PLCs, ingest live telemetry, run a digital twin, or prove that a proposed intervention improves a real process.
-- Validate recommendations with domain experts, operational constraints, controlled trials, and measured before/after metrics before acting on them.
-- Do not submit confidential, regulated, or safety-critical operational data to an external model without appropriate authorization and controls.
+---
 
-## Development
+CONTINUOUS INTELLIGENCE
 
-```bash
-pytest
-ruff check .
-ruff format --check .
-mypy app
-```
+Overdrive is a feedback loop, not a one-time analysis.
 
-These commands are the intended local quality checks. A command listed here is not evidence that it has passed; inspect the current CI run before treating a revision as validated.
+Observe → Understand → Investigate → Reason → Plan → Act → Evaluate → Learn → Improve → repeat
 
-## Roadmap
+Every evaluation produces new information. That information improves future investigation, reasoning, and planning.
 
-1. Add deterministic baseline analysis and a reproducible benchmark dataset.
-2. Add evidence references and explicit separation between observed facts, hypotheses, and recommendations.
-3. Evaluate output quality against human-labelled bottlenecks.
-4. Add scenario simulation only when its assumptions and validation protocol are documented.
-5. Consider controlled integrations with external systems only after authorization, audit logging, dry-run mode, and rollback safeguards exist.
+---
 
-## Repository
+RESEARCH QUESTIONS
 
-- Source: [GitHub](https://github.com/Gitcoder12/Overdrive)
-- API contract: `/openapi.json` when running locally
-- Interactive local demo: [Swagger UI](http://127.0.0.1:8000/docs)
+- Can AI discover inefficiencies in complex systems?
+- Can autonomous agents investigate problems effectively?
+- Can intelligent systems identify root causes rather than surface symptoms?
+- Can AI generate useful optimization strategies?
+- Can proposed solutions be evaluated automatically?
+- How reliable are AI-generated decisions under changing conditions?
 
-**License:** Apache-2.0
+These questions may lead to experiments, benchmarks, and research papers.
+
+---
+
+EXPERIMENTAL METHOD
+
+Research Question → Hypothesis → Method → Implementation → Experiment → Measurement → Analysis → Conclusion → Improved System
+
+Important experiments should be reproducible. Claims should be backed by measurements.
+
+---
+
+REPOSITORY STRUCTURE
+
+Overdrive/
+│
+├── core/           # Core system functionality
+├── intelligence/   # AI and reasoning components
+├── analysis/       # System and data analysis
+├── agents/         # Autonomous agent components
+├── optimization/   # Optimization methods
+├── experiments/    # Research experiments
+├── evaluation/     # Benchmarks and evaluation
+├── data/           # Data and data-processing
+├── scripts/        # Development and automation
+├── tests/          # Automated testing
+├── docs/           # Technical and research docs
+│
+├── README.md
+└── LICENSE
+
+This tree is a target, not a blueprint. Folders are added only when they contain real code.
+
+---
+
+DEVELOPMENT PHILOSOPHY
+
+Understand before changing.
+Study existing code before major modifications.
+
+Build incrementally.
+One step at a time. No full rewrites.
+
+Measure everything.
+Tests, benchmarks, experiments. No assumptions.
+
+Keep components reusable.
+Avoid duplication. Design for reuse.
+
+Control complexity.
+Introduce complexity only when it solves a real problem.
+
+Research through building.
+Ideas → implementations → experiments → evidence.
+
+---
+
+DEVELOPMENT LOOP
+
+Idea → Understand → Design → Implement → Test → Experiment → Measure → Evaluate → Improve → Commit → Next Idea
+
+---
+
+TECHNOLOGY
+
+Overdrive combines different approaches depending on the problem:
+
+- AI and machine learning
+- Large language models
+- Autonomous agents
+- Classical algorithms and search
+- Optimization and graph algorithms
+- Statistical methods and simulation
+- Data processing and evaluation systems
+
+Not every problem requires an AI model. The right method is chosen per problem.
+
+---
+
+LONG-TERM DIRECTION
+
+The goal is a general-purpose intelligence and optimization platform for complex systems.
+
+Understand → Investigate → Detect → Explain → Generate Solutions → Optimize → Plan → Execute → Evaluate → Learn → Improve
+
+The system should stay:
+
+- Reliable
+- Testable
+- Interpretable
+- Reproducible
+- Measurably better over time
+- Under controlled complexity
+
+---
+
+CURRENT STATUS
+
+Active Development — Planning Phase.
+
+The implementation grows progressively as new capabilities and experiments are developed. The repository reflects what has actually been built, not what is planned.
+
+Current reality: README and LICENSE only.
+Next milestone: First working core module.
+
+---
+
+GUIDING PRINCIPLE
+
+Investigate complexity. Understand systems. Find what can be improved. Develop actionable solutions. Learn from the results.
+
+---
+
+Overdrive
+
+Investigate. Understand. Optimize. Act. Improve.
+
+---
+
+LICENSE
+
+Apache License 2.0. See LICENSE for full terms.
+
+---
+
+Author: Dharavath Satvik
+
+
+---
+
+## AI-maintained project notes (secondary — 2026-11-13)
+
+This section supplements the maintainer-authored README above. The original text has been restored verbatim from Git-history baseline `a5cb229eab55c656f7adc6fb1561009b5901490f`; this addendum does not replace or certify the original claims.
+
+- The current source tree, runtime data and tests are the implementation source of truth. Roadmap items, draft PRs and AI-generated descriptions are not shipped features by themselves.
+- Preserve real and maintainer-provided data. Never silently substitute generated or placeholder data. Clearly label and isolate synthetic fixtures.
+- Mark unverified sources, identifiers, metrics, benchmark results and external claims as unknown/unverified rather than guessing.
+- Verify setup, execution, tests and public claims against the exact current commit before using this repository in a job, research or academic application.
+- See [MODEL_AUDIT_ROUTER.md](MODEL_AUDIT_ROUTER.md) for independent model review instructions and the merge gate.
