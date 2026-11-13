@@ -33,7 +33,7 @@ class Settings(BaseSettings):
     # --- LLM Configuration ---
     llm_provider: str = Field(
         default="anthropic",
-        description="anthropic | openai | google | groq | deepseek | openrouter | ollama",
+        description="anthropic | openai | google | groq | ollama",
     )
     llm_model: str = Field(
         default="",
@@ -47,8 +47,6 @@ class Settings(BaseSettings):
     openai_api_key: str | None = None
     google_api_key: str | None = None
     groq_api_key: str | None = None
-    deepseek_api_key: str | None = None
-    openrouter_api_key: str | None = None
 
     # --- Local / Self-Hosted ---
     ollama_base_url: str = "http://localhost:11434"
@@ -63,8 +61,6 @@ class Settings(BaseSettings):
             "openai": self.openai_api_key,
             "google": self.google_api_key,
             "groq": self.groq_api_key,
-            "deepseek": self.deepseek_api_key,
-            "openrouter": self.openrouter_api_key,
         }
 
         if provider != "ollama" and provider in key_map and not key_map[provider]:
