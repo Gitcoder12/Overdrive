@@ -86,3 +86,17 @@ Feed the new performance metrics back into the engine to improve the next cycle.
 - [Company and team fit](COMPANY_FIT.md) · [README explanation draft](README_ADDENDUM_DRAFT.md)
 - [README quality checklist](README_QUALITY_CHECKLIST.md)
 - [Contributing](CONTRIBUTING.md) · [Agent instructions](AGENTS.md) · [Agent skills](SKILLS.md)
+
+## Understanding the project
+
+### In plain language
+
+A proposed engineering platform that analyses a process, finds bottlenecks and compares possible ways to improve it.
+
+### Technical and research view
+
+The README describes a broad optimization and field-intelligence concept involving data ingestion, digital-twin simulation, multi-agent workflows and continuous improvement. Treat these as intended architecture until each module is verified in code. The roadmap prioritises one measurable process and a baseline before any universal or autonomous claims.
+
+Document architecture, mathematical objective, constraints, baseline, algorithm, simulation assumptions, metrics and failure behavior. Separate intended future modules from implemented components.
+
+For future work, see [FEATURE_UPGRADE_PLAN.md](FEATURE_UPGRADE_PLAN.md), [ACTIVITY_LOG.md](ACTIVITY_LOG.md), [COMPANY_FIT.md](COMPANY_FIT.md) and [CONTRIBUTING.md](CONTRIBUTING.md).
