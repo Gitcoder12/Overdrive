@@ -1,102 +1,253 @@
-# Overdrive
-### Universal Process Optimization & Field Intelligence Engine
+Overdrive
 
-Overdrive is an AI-driven research and engineering platform designed to analyze, optimize, and improve any process—whether real or virtual, physical or digital. It operates on a continuous feedback loop, using multi-agent swarms, digital twin simulation, and advanced algorithms to turn complex, inefficient systems into highly optimized operations.
-
-## Executive Summary (TL;DR)
-Overdrive is a universal optimization engine. If a system has a process, Overdrive can improve it. It ingests data from physical factories, digital software pipelines, or abstract business workflows, detects bottlenecks, simulates solutions, and executes actionable improvements. It is modular, domain-agnostic, and built for systemic efficiency.
+An AI-powered field intelligence and optimization engine that investigates complex systems, identifies problems and inefficiencies, and develops actionable solutions.
 
 ---
 
-## The Overdrive Philosophy (Any Process, Any Domain)
-Overdrive is built on the belief that the fundamental mechanics of optimization are universal. Whether you are trying to reduce defects on an assembly line, lower API latency in a microservice architecture, or reduce patient wait times in a hospital, the core loop remains the same:
+WHAT IT IS
 
-1. **Observe:** Ingest telemetry, logs, sensor data, and process metrics.
-2. **Investigate:** Detect patterns, anomalies, and root causes of inefficiencies.
-3. **Reason:** Generate hypotheses using AI models, agent swarms, and graph algorithms.
-4. **Optimize:** Simulate solutions (via Digital Twin) to find the best path forward.
-5. **Act:** Implement changes via physical actuators, software APIs, or operational workflows.
-6. **Evaluate:** Measure the real-world impact of the changes.
-7. **Improve:** Feed the results back into the system to optimize the next cycle.
-*(Repeat: Continuous autonomous feedback loop.)*
+Overdrive is a research and engineering platform for building intelligent systems that investigate complex environments and help determine how those systems can be understood, improved, and optimized.
 
-## Universal Use Cases
-- **Physical Systems (Industrial IoT):** Optimize factory assembly lines, reduce machine downtime, manage energy consumption, and predict maintenance.
-- **Virtual Systems (Software & Cloud):** Profile codebases, eliminate database bottlenecks, optimize network routing, and balance cloud load.
-- **Hybrid Systems (Supply Chain & Logistics):** Optimize shipping routes, warehouse layouts, and real-time inventory distribution.
-- **Abstract Systems (Business Operations):** Analyze hospital patient flow, streamline customer support ticket routing, and optimize financial workflows.
+It serves two roles:
 
-## Core Architecture & Features
-- **Field Intelligence:** Ingests and normalizes raw, multi-modal data (sensor data, SQL, logs, APIs) into a unified representation.
-- **Digital Twin Simulation:** Builds a virtual replica of the physical or digital process to test hypotheses safely before executing them in reality.
-- **Agent Swarm Reasoning:** Deploys specialized AI agents (Efficiency, Quality, Risk, Logistics) to debate and propose the best optimization strategy.
-- **Universal Actuators:** Executes changes across domains (e.g., sending MQTT commands to a PLC, triggering a Git commit, or calling a REST API).
-- **Failsafe Validation:** Every change is measured against a baseline. If an optimization degrades performance or breaks a constraint, it is instantly rolled back.
+- An engineering repository — software, algorithms, experiments, tools.
+- A research platform — where new methods for intelligence, reasoning, and optimization are developed and evaluated.
 
-## Design Principles
-- **Iterative:** Builds incrementally. No full system shutdowns or complete rewrites are required.
-- **Reliable:** Focuses on reproducible, measurable improvements with strict baseline metrics.
-- **Domain-Agnostic:** Uses the right tool for the job—whether that is classical Operations Research, Machine Learning, or Autonomous Agents.
+The repository is the implementation. The experiments are the research. The results become evidence.
 
 ---
 
-## How to Use It
-**1. Define the System & Objective**
-Start with a specific target (e.g., "Why is our factory defect rate at 5%?" or "Why is our API response time spiking?").
+CORE IDEA
 
-**2. Run Overdrive**
-Deploy the engine to ingest data, map the process, and detect inefficiencies.
-
-**3. Evaluate & Act**
-Review the optimized solutions. Apply the changes via physical controls, software deployments, or human operators.
-
-**4. Iterate**
-Feed the new performance metrics back into the engine to improve the next cycle.
-
-## Tech Stack
-- **AI & Reasoning:** LLMs, Multi-Agent Swarms, Reinforcement Learning.
-- **Data & Processing:** Time-Series Databases, Graph Algorithms, Operations Research.
-- **Integration:** IoT Protocols (MQTT, OPC-UA), REST/GraphQL APIs, Git.
-- **Focus:** Systemic efficiency, throughput, and structural integrity.
+Observe → Investigate → Understand → Reason → Optimize → Act → Evaluate → Improve
 
 ---
 
-## Research & Development
+CORE QUESTIONS
 
-### Key Questions Driving the Project
-- Can AI automatically detect physical or systemic inefficiencies without human intervention?
-- Can it generate, simulate, and validate solutions autonomously?
-- How can the system improve over time across entirely different domains using the same core loop?
-
-### Next Steps
-- Start with small, controlled experiments (e.g., analyze a simulated factory floor or a specific software pipeline).
-- Replicate results to prove effectiveness and domain-agnostic reliability.
-- Expand to larger, more complex real-world systems.
-
----
-## Author & License
-**Author:** Dharavath Satvik
-**License:** Apache License 2.0
+1. What is happening?
+2. Why is it happening?
+3. What can be improved?
+4. What should happen next?
 
 ---
 
-## Project handbook
+INTELLIGENCE PIPELINE
 
-- [Activity log](ACTIVITY_LOG.md) · [Feature upgrade plan](FEATURE_UPGRADE_PLAN.md)
-- [Company and team fit](COMPANY_FIT.md) · [README explanation draft](README_ADDENDUM_DRAFT.md)
-- [README quality checklist](README_QUALITY_CHECKLIST.md)
-- [Contributing](CONTRIBUTING.md) · [Agent instructions](AGENTS.md) · [Agent skills](SKILLS.md)
+Complex System
+      ↓
+   Observe
+      ↓
+   Analyze
+      ↓
+ Detect Problems
+      ↓
+ Investigate
+      ↓
+   Reason
+      ↓
+    Plan
+      ↓
+  Optimize
+      ↓
+Develop Solution
+      ↓
+    Act
+      ↓
+  Evaluate
+      ↓
+   Learn
+      ↓
+  Improve
+      ↺
 
-## Understanding the project
+Not every problem requires every stage. Overdrive uses the right combination of algorithms, models, agents, and methods for each problem.
 
-### In plain language
+---
 
-A proposed engineering platform that analyses a process, finds bottlenecks and compares possible ways to improve it.
+CAPABILITIES
 
-### Technical and research view
+Field Intelligence
+Observe complex systems. Transform raw observations into useful representations.
 
-The README describes a broad optimization and field-intelligence concept involving data ingestion, digital-twin simulation, multi-agent workflows and continuous improvement. Treat these as intended architecture until each module is verified in code. The roadmap prioritises one measurable process and a baseline before any universal or autonomous claims.
+System Investigation
+Identify relationships, generate hypotheses, search for causes.
 
-Document architecture, mathematical objective, constraints, baseline, algorithm, simulation assumptions, metrics and failure behavior. Separate intended future modules from implemented components.
+Problem Detection
+Inefficiencies, anomalies, bottlenecks, failures, risks, resource waste, performance degradation.
 
-For future work, see [FEATURE_UPGRADE_PLAN.md](FEATURE_UPGRADE_PLAN.md), [ACTIVITY_LOG.md](ACTIVITY_LOG.md), [COMPANY_FIT.md](COMPANY_FIT.md) and [CONTRIBUTING.md](CONTRIBUTING.md).
+Reasoning
+Combine AI models, algorithms, structured reasoning, data analysis, and experimentation.
+
+Optimization
+Resources, scheduling, routing, configuration, cost, energy, reliability, multi-objective trade-offs.
+
+Planning
+Develop possible courses of action based on current state and objectives.
+
+Action
+Transform recommendations into executable actions or system changes.
+
+Evaluation
+Measure whether an action actually improves the system.
+
+---
+
+CONTINUOUS INTELLIGENCE
+
+Overdrive is a feedback loop, not a one-time analysis.
+
+Observe → Understand → Investigate → Reason → Plan → Act → Evaluate → Learn → Improve → repeat
+
+Every evaluation produces new information. That information improves future investigation, reasoning, and planning.
+
+---
+
+RESEARCH QUESTIONS
+
+- Can AI discover inefficiencies in complex systems?
+- Can autonomous agents investigate problems effectively?
+- Can intelligent systems identify root causes rather than surface symptoms?
+- Can AI generate useful optimization strategies?
+- Can proposed solutions be evaluated automatically?
+- How reliable are AI-generated decisions under changing conditions?
+
+These questions may lead to experiments, benchmarks, and research papers.
+
+---
+
+EXPERIMENTAL METHOD
+
+Research Question → Hypothesis → Method → Implementation → Experiment → Measurement → Analysis → Conclusion → Improved System
+
+Important experiments should be reproducible. Claims should be backed by measurements.
+
+---
+
+REPOSITORY STRUCTURE
+
+Overdrive/
+│
+├── core/           # Core system functionality
+├── intelligence/   # AI and reasoning components
+├── analysis/       # System and data analysis
+├── agents/         # Autonomous agent components
+├── optimization/   # Optimization methods
+├── experiments/    # Research experiments
+├── evaluation/     # Benchmarks and evaluation
+├── data/           # Data and data-processing
+├── scripts/        # Development and automation
+├── tests/          # Automated testing
+├── docs/           # Technical and research docs
+│
+├── README.md
+└── LICENSE
+
+This tree is a target, not a blueprint. Folders are added only when they contain real code.
+
+---
+
+DEVELOPMENT PHILOSOPHY
+
+Understand before changing.
+Study existing code before major modifications.
+
+Build incrementally.
+One step at a time. No full rewrites.
+
+Measure everything.
+Tests, benchmarks, experiments. No assumptions.
+
+Keep components reusable.
+Avoid duplication. Design for reuse.
+
+Control complexity.
+Introduce complexity only when it solves a real problem.
+
+Research through building.
+Ideas → implementations → experiments → evidence.
+
+---
+
+DEVELOPMENT LOOP
+
+Idea → Understand → Design → Implement → Test → Experiment → Measure → Evaluate → Improve → Commit → Next Idea
+
+---
+
+TECHNOLOGY
+
+Overdrive combines different approaches depending on the problem:
+
+- AI and machine learning
+- Large language models
+- Autonomous agents
+- Classical algorithms and search
+- Optimization and graph algorithms
+- Statistical methods and simulation
+- Data processing and evaluation systems
+
+Not every problem requires an AI model. The right method is chosen per problem.
+
+---
+
+LONG-TERM DIRECTION
+
+The goal is a general-purpose intelligence and optimization platform for complex systems.
+
+Understand → Investigate → Detect → Explain → Generate Solutions → Optimize → Plan → Execute → Evaluate → Learn → Improve
+
+The system should stay:
+
+- Reliable
+- Testable
+- Interpretable
+- Reproducible
+- Measurably better over time
+- Under controlled complexity
+
+---
+
+CURRENT STATUS
+
+Active Development — Planning Phase.
+
+The implementation grows progressively as new capabilities and experiments are developed. The repository reflects what has actually been built, not what is planned.
+
+Current reality: README and LICENSE only.
+Next milestone: First working core module.
+
+---
+
+GUIDING PRINCIPLE
+
+Investigate complexity. Understand systems. Find what can be improved. Develop actionable solutions. Learn from the results.
+
+---
+
+Overdrive
+
+Investigate. Understand. Optimize. Act. Improve.
+
+---
+
+LICENSE
+
+Apache License 2.0. See LICENSE for full terms.
+
+---
+
+Author: Dharavath Satvik
+
+
+---
+
+## AI-maintained project notes (secondary — 2026-11-13)
+
+This section supplements the maintainer-authored README above. The original text has been restored verbatim from Git-history baseline `a5cb229eab55c656f7adc6fb1561009b5901490f`; this addendum does not replace or certify the original claims.
+
+- The current source tree, runtime data and tests are the implementation source of truth. Roadmap items, draft PRs and AI-generated descriptions are not shipped features by themselves.
+- Preserve real and maintainer-provided data. Never silently substitute generated or placeholder data. Clearly label and isolate synthetic fixtures.
+- Mark unverified sources, identifiers, metrics, benchmark results and external claims as unknown/unverified rather than guessing.
+- Verify setup, execution, tests and public claims against the exact current commit before using this repository in a job, research or academic application.
+- See [MODEL_AUDIT_ROUTER.md](MODEL_AUDIT_ROUTER.md) for independent model review instructions and the merge gate.
