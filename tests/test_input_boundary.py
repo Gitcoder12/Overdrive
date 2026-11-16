@@ -62,6 +62,8 @@ def test_oversized_process_data_is_rejected_before_provider_call() -> None:
         )
 
     assert response.status_code == 422
+    assert response.json()["detail"][0]["msg"].startswith("Value error")
+    assert "input" not in response.json()["detail"][0]
     fake_llm.complete.assert_not_called()
 
 
