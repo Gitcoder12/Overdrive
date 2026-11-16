@@ -105,10 +105,11 @@ def test_prompt_like_process_text_remains_data_in_json_payload() -> None:
 def test_process_data_rejects_non_finite_json_numbers() -> None:
     response = client.post(
         "/analyze",
-        json={
-            "process": "Order fulfillment with inventory and dispatch",
-            "data": {"measurement": float("nan")},
-        },
+        content=(
+            '{"process":"Order fulfillment with inventory and dispatch",'
+            '"data":{"measurement":NaN}}'
+        ),
+        headers={"content-type": "application/json"},
     )
 
     assert response.status_code == 422
