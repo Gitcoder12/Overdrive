@@ -9,6 +9,8 @@ from typing import Any, Literal
 
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.concurrency import run_in_threadpool
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from app.config import Settings, get_settings
@@ -25,6 +27,19 @@ app = FastAPI(
     description="AI-powered field intelligence and optimization engine",
     version="0.1.0",
 )
+
+@app.exception_handler(RequestValidationError)
+async def safe_request_validation_error(_request: Any, exc: RequestValidationError) -> JSONResponse:
+    """Return safe validation metadata without echoing untrusted input values."""
+    errors = [
+        {
+            "loc": [str(part) if not isinstance(part, (str, int)) else part for part in error.get("loc", ())],
+            "msg": str(error.get("msg", "Invalid request")),
+            "type": str(error.get("type", "value_error")),
+        }
+        for error in exc.errors()
+    ]
+    return JSONResponse(status_code=422, content={"detail": errors})
 
 
 def _validate_bounded_json(value: Any) -> Any:
