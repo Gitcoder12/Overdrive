@@ -45,9 +45,9 @@ def _validate_bounded_json(value: Any) -> Any:
             stack.extend((item, depth + 1) for item in current.values())
         elif isinstance(current, list):
             stack.extend((item, depth + 1) for item in current)
-        elif current is None or isinstance(current, (str, bool, int)):
-            continue
-        elif isinstance(current, float) and math.isfinite(current):
+        elif current is None or isinstance(current, (str, bool, int)) or (
+            isinstance(current, float) and math.isfinite(current)
+        ):
             continue
         else:
             raise ValueError("data must contain only finite JSON-compatible values")
