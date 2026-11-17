@@ -251,3 +251,22 @@ This section supplements the maintainer-authored README above. The original text
 - Mark unverified sources, identifiers, metrics, benchmark results and external claims as unknown/unverified rather than guessing.
 - Verify setup, execution, tests and public claims against the exact current commit before using this repository in a job, research or academic application.
 - See [MODEL_AUDIT_ROUTER.md](MODEL_AUDIT_ROUTER.md) for independent model review instructions and the merge gate.
+
+---
+
+## Engineering Audit & Handover — 2026-11-17
+
+**Reviewed commit:** `45b6e72156c74973088d304e2cfeb82a8e639347` (`main`). Static inspection covered `app/main.py`, provider adapters, and API tests; tests were not executed.
+
+### Confirmed findings
+- The API implements bounded JSON validation (byte, nesting, and node limits), validates the model's JSON response against a Pydantic response schema, and returns generic provider errors rather than exposing provider exception details.
+- The reviewed tests include malformed/oversized input boundaries and invalid provider-output cases. These are valuable safeguards, but their passing status was not verified in this audit.
+- Provider adapters support multiple vendors; actual behavior still depends on configured credentials, model IDs, SDK versions, upstream availability, and provider-specific limits.
+- The current API analyzes a supplied process description/data payload. It does not by itself prove optimization outcomes in a live production workflow.
+
+### Next actions
+1. Run the complete test suite and CI on the reviewed commit; preserve the result and environment.
+2. Add provider-specific timeout/cancellation and retry policies with bounded budgets.
+3. Evaluate model recommendations against a human-reviewed process-analysis benchmark before publishing quality or ROI claims.
+
+**Verification status:** static source/test inspection only; tests, provider integrations, and real-world outcome quality remain unverified.
