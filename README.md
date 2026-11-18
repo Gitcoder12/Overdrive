@@ -270,3 +270,10 @@ This section supplements the maintainer-authored README above. The original text
 3. Evaluate model recommendations against a human-reviewed process-analysis benchmark before publishing quality or ROI claims.
 
 **Verification status:** static source/test inspection only; tests, provider integrations, and real-world outcome quality remain unverified.
+
+---
+
+## Examples Used
+- Finding bottlenecks in a delivery network
+- Optimizing resource allocation under competing objectives
+- Investigating a performance regression and measuring the effect of a proposed fix
