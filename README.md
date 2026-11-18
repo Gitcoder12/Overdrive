@@ -270,3 +270,28 @@ This section supplements the maintainer-authored README above. The original text
 3. Evaluate model recommendations against a human-reviewed process-analysis benchmark before publishing quality or ROI claims.
 
 **Verification status:** static source/test inspection only; tests, provider integrations, and real-world outcome quality remain unverified.
+
+
+---
+
+## Branch Activity & Development History
+
+**Audit date:** 2026-11-18 · **Comparison base:** `main`
+
+| Branch | Difference from `main` | Observed work / changed paths |
+|---|---:|---|
+| `copilot/overdrive-investigation-workflows` | 0 ahead / 17 behind | No unique commits relative to current `main`; branch is behind |
+| `docs/accurate-mvp-and-api-demo` | 4 / 13 | README accuracy and MVP/API demo documentation |
+| `docs/portfolio-operating-kit-2026-11-13` | 4 / 13 | Activity log, company-fit notes, feature plan, contributor/agent guidance and README support docs |
+| `docs/project-status-2026-11-16-overdrive` | 1 / 10 | Project status snapshot: `PROJECT_STATUS.md` |
+| `docs/upgrade-plan` | 1 / 17 | Upgrade plan: `docs/UPGRADE_PLAN.md` |
+| `fix/api-output-validation-and-ci` | 13 / 13 | CI workflow, API configuration/handlers, output validation and API tests |
+| `fix/untrusted-input-boundary` | 0 / 2 | No unique commits relative to current `main`; branch is behind |
+
+### Open pull requests observed during this audit
+
+- [PR #8 — project status snapshot](https://github.com/Gitcoder12/Overdrive/pull/8)
+
+**Review note:** A branch comparison describes its relationship to the current base; it does not indicate whether an open PR exists or whether its CI passed. Verify the PR head/base and test results before merging. No branch has been merged or deleted as part of this documentation work.
+
+**Verification boundary:** This is a Git metadata and changed-path audit, not a correctness or security certification.
