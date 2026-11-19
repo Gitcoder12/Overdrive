@@ -113,7 +113,7 @@ Edit .env and configure LLM_PROVIDER, the matching API key (if required), and op
 | LLM_PROVIDER | anthropic, openai, google, groq or ollama |
 | LLM_MODEL | Optional model identifier; an adapter default is used when empty |
 | MAX_TOKENS | Maximum completion token budget (100–8,000) |
-| TEMPERATURE | Configurable sampling setting |
+| TEMPERATURE | Declared in application settings, but not currently passed to provider adapters; changing it has no effect yet |
 | ANTHROPIC_API_KEY | Anthropic credential |
 | OPENAI_API_KEY | OpenAI credential |
 | GOOGLE_API_KEY | Google credential |
