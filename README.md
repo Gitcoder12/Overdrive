@@ -202,3 +202,27 @@ Apache License 2.0 — see [LICENSE](LICENSE).
 ## Author
 
 Dharavath Satvik
+
+
+---
+
+## Comparison with Existing Open-Source Projects
+
+Overdrive is documented as an LLM-assisted process-analysis API that accepts a process description and optional structured data, then returns ranked bottleneck hypotheses and candidate fixes. The README explicitly describes an early API MVP whose output is advisory and does not execute changes in external systems. These projects provide adjacent process-mining and optimization references.
+
+| Project | Established focus | Relationship to Overdrive |
+|---|---|---|
+| [PM4Py](https://github.com/pm4py/pm4py-core) | Process mining from event logs, including discovery, conformance and performance analysis | A mature data-driven process-mining library; Overdrive currently accepts user-described processes and bounded input rather than requiring a formal event log. |
+| [Google OR-Tools](https://github.com/google/or-tools) | Constraint programming and combinatorial optimization | A mature optimization toolkit; Overdrive proposes candidate fixes through an LLM and does not currently solve or execute an optimization model. |
+| [bpmn-js](https://github.com/bpmn-io/bpmn-js) | BPMN process-model visualization and editing | A process-modelling interface; Overdrive's intended role is analysis of bottleneck hypotheses rather than authoring process diagrams. |
+
+### Where Overdrive is different
+- **Natural-language process intake:** the API can start from a process description with optional structured metrics instead of requiring a fully instrumented event log.
+- **Hypothesis generation:** it returns ranked bottleneck candidates, root-cause hypotheses and proposed fixes in a validated response schema.
+- **Human-reviewed recommendations:** the service distinguishes observations from hypotheses and does not execute external changes.
+
+### Where established projects are stronger
+PM4Py offers formal process-mining algorithms when event logs are available; OR-Tools provides actual optimization solvers; bpmn-js provides a mature process-model editor. Overdrive's LLM output cannot guarantee factual correctness, causal diagnosis or ROI accuracy.
+
+### Evidence and limitations
+Evaluate bottleneck ranking against expert-labelled cases and measured operational outcomes. Distinguish input-supported observations from model-generated hypotheses, and keep ROI as “requires measurement” unless a defensible calculation exists. Benchmark latency, cost and recommendation quality across providers. This is a workflow comparison, not an optimization-effectiveness claim.
