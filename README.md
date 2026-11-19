@@ -1,279 +1,204 @@
-Overdrive
+# Overdrive
 
-An AI-powered field intelligence and optimization engine that investigates complex systems, identifies problems and inefficiencies, and develops actionable solutions.
+**An AI-assisted process-analysis API for investigating operational bottlenecks.**
 
----
+Overdrive accepts a process description and optional structured data, sends the bounded input to a configured language-model provider, and returns a validated, ranked list of candidate bottlenecks with root-cause hypotheses and proposed fixes.
 
-WHAT IT IS
+The current repository is an early API MVP. It is not yet a general-purpose autonomous optimization platform, and it does not execute changes in external systems.
 
-Overdrive is a research and engineering platform for building intelligent systems that investigate complex environments and help determine how those systems can be understood, improved, and optimized.
+## Current capabilities
 
-It serves two roles:
+- FastAPI service with a health endpoint and a process-analysis endpoint
+- Configurable LLM provider settings, including remote-provider API-key fields and a local Ollama URL
+- Structured request validation and bounded JSON input
+- Schema validation for model-generated bottleneck reports
+- Ranked bottlenecks with severity, root-cause hypothesis, proposed fix, confidence, and an ROI field
+- Safe API error responses that avoid returning raw provider exception details
 
-- An engineering repository — software, algorithms, experiments, tools.
-- A research platform — where new methods for intelligence, reasoning, and optimization are developed and evaluated.
+Model output is advisory. Findings and recommendations should be reviewed by a person and validated against real operational measurements.
 
-The repository is the implementation. The experiments are the research. The results become evidence.
+## How it works
 
----
+```text
+Process description + optional data
+                |
+                v
+        Request validation
+                |
+                v
+     Configured LLM provider
+                |
+                v
+      Structured JSON response
+                |
+                v
+       Pydantic validation
+                |
+                v
+       Ranked analysis report
+```
 
-CORE IDEA
+The API asks the model to distinguish observations supported by the supplied input from hypotheses that need investigation. When the evidence does not support a defensible ROI estimate, the expected value is `Requires measurement`.
 
-Observe → Investigate → Understand → Reason → Optimize → Act → Evaluate → Improve
+## Requirements
 
----
+- Python 3.11+
+- A configured provider and its credentials, or a running local model service if using a compatible local-provider configuration
 
-CORE QUESTIONS
+## Setup
 
-1. What is happening?
-2. Why is it happening?
-3. What can be improved?
-4. What should happen next?
+Clone the repository and install it with its development dependencies:
 
----
+```bash
+git clone https://github.com/Gitcoder12/Overdrive.git
+cd Overdrive
+python -m venv .venv
+```
 
-INTELLIGENCE PIPELINE
+Activate the virtual environment:
 
-Complex System
-      ↓
-   Observe
-      ↓
-   Analyze
-      ↓
- Detect Problems
-      ↓
- Investigate
-      ↓
-   Reason
-      ↓
-    Plan
-      ↓
-  Optimize
-      ↓
-Develop Solution
-      ↓
-    Act
-      ↓
-  Evaluate
-      ↓
-   Learn
-      ↓
-  Improve
-      ↺
+```bash
+# macOS / Linux
+source .venv/bin/activate
 
-Not every problem requires every stage. Overdrive uses the right combination of algorithms, models, agents, and methods for each problem.
+# Windows PowerShell
+.venv\\Scripts\\Activate.ps1
+```
 
----
+Install the package:
 
-CAPABILITIES
+```bash
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
+```
 
-Field Intelligence
-Observe complex systems. Transform raw observations into useful representations.
+Create your local environment file:
 
-System Investigation
-Identify relationships, generate hypotheses, search for causes.
+```bash
+# macOS / Linux
+cp .env.example .env
 
-Problem Detection
-Inefficiencies, anomalies, bottlenecks, failures, risks, resource waste, performance degradation.
+# Windows PowerShell
+Copy-Item .env.example .env
+```
 
-Reasoning
-Combine AI models, algorithms, structured reasoning, data analysis, and experimentation.
+Edit `.env` and configure the provider and matching API key. Never commit real credentials.
 
-Optimization
-Resources, scheduling, routing, configuration, cost, energy, reliability, multi-objective trade-offs.
+## Run the API
 
-Planning
-Develop possible courses of action based on current state and objectives.
+```bash
+uvicorn app.main:app --reload
+```
 
-Action
-Transform recommendations into executable actions or system changes.
+The local service uses the default Uvicorn address, `http://127.0.0.1:8000`.
 
-Evaluation
-Measure whether an action actually improves the system.
+Interactive API documentation is available at:
 
----
+- Swagger UI: `http://127.0.0.1:8000/docs`
+- OpenAPI schema: `http://127.0.0.1:8000/openapi.json`
 
-CONTINUOUS INTELLIGENCE
+## API
 
-Overdrive is a feedback loop, not a one-time analysis.
+### Health check
 
-Observe → Understand → Investigate → Reason → Plan → Act → Evaluate → Learn → Improve → repeat
+```bash
+curl http://127.0.0.1:8000/health
+```
 
-Every evaluation produces new information. That information improves future investigation, reasoning, and planning.
+Returns service status and the configured provider name. It does not establish that an upstream provider request will succeed.
 
----
+### Analyze a process
 
-RESEARCH QUESTIONS
+```bash
+curl -X POST http://127.0.0.1:8000/analyze \
+  -H "Content-Type: application/json" \
+  -d '{
+    "process": "Describe how incoming customer support requests are assigned and resolved.",
+    "data": {
+      "daily_requests": 500,
+      "agents": 12,
+      "average_resolution_hours": 18
+    }
+  }'
+```
 
-- Can AI discover inefficiencies in complex systems?
-- Can autonomous agents investigate problems effectively?
-- Can intelligent systems identify root causes rather than surface symptoms?
-- Can AI generate useful optimization strategies?
-- Can proposed solutions be evaluated automatically?
-- How reliable are AI-generated decisions under changing conditions?
+The `process` field must contain at least 10 non-whitespace characters. Optional `data` must be JSON-compatible and is bounded by size, nesting-depth, and node-count limits.
 
-These questions may lead to experiments, benchmarks, and research papers.
+A successful response contains:
 
----
+- `provider`: configured provider name
+- `summary`: concise analysis overview
+- `bottlenecks`: 3–7 ranked items, each with `rank`, `name`, `severity`, `root_cause`, `fix`, `roi_estimate`, and `confidence`
 
-EXPERIMENTAL METHOD
+The API validates the response structure; it cannot guarantee that model-generated explanations, confidence values, or recommendations are factually correct.
 
-Research Question → Hypothesis → Method → Implementation → Experiment → Measurement → Analysis → Conclusion → Improved System
+## Configuration
 
-Important experiments should be reproducible. Claims should be backed by measurements.
+Configuration is loaded from environment variables (see [.env.example](.env.example)).
 
----
+| Variable | Purpose |
+|---|---|
+| `LLM_PROVIDER` | Provider selection |
+| `LLM_MODEL` | Optional model identifier |
+| `MAX_TOKENS` | Response token budget |
+| `TEMPERATURE` | Sampling temperature |
+| `ANTHROPIC_API_KEY` | Anthropic credential |
+| `OPENAI_API_KEY` | OpenAI credential |
+| `GOOGLE_API_KEY` | Google credential |
+| `GROQ_API_KEY` | Groq credential |
+| `OLLAMA_BASE_URL` | Local Ollama service URL |
+| `DEBUG` | Debug setting |
 
-REPOSITORY STRUCTURE
+The checked-in environment template lists `anthropic`, `openai`, `google`, `groq`, and `ollama` as provider choices. Actual availability depends on the provider adapter implementation, credentials, installed SDKs, and upstream service.
 
-Overdrive/
-│
-├── core/           # Core system functionality
-├── intelligence/   # AI and reasoning components
-├── analysis/       # System and data analysis
-├── agents/         # Autonomous agent components
-├── optimization/   # Optimization methods
-├── experiments/    # Research experiments
-├── evaluation/     # Benchmarks and evaluation
-├── data/           # Data and data-processing
-├── scripts/        # Development and automation
-├── tests/          # Automated testing
-├── docs/           # Technical and research docs
-│
-├── README.md
-└── LICENSE
+## Development
 
-This tree is a target, not a blueprint. Folders are added only when they contain real code.
+Run the test suite:
 
----
+```bash
+pytest
+```
 
-DEVELOPMENT PHILOSOPHY
+Run linting:
 
-Understand before changing.
-Study existing code before major modifications.
+```bash
+ruff check .
+```
 
-Build incrementally.
-One step at a time. No full rewrites.
+Run static type checking:
 
-Measure everything.
-Tests, benchmarks, experiments. No assumptions.
+```bash
+mypy app
+```
 
-Keep components reusable.
-Avoid duplication. Design for reuse.
+These are the configured development tools; run them on your current checkout and review the results before treating the build as verified.
 
-Control complexity.
-Introduce complexity only when it solves a real problem.
+## Current status
 
-Research through building.
-Ideas → implementations → experiments → evidence.
+**Early API MVP — active development.**
 
----
+The implemented scope is process-description analysis through a configured LLM provider. The broader vision—field intelligence, autonomous investigation, optimization, execution, and continuous learning—is a long-term direction, not a claim about shipped functionality.
 
-DEVELOPMENT LOOP
+### Not yet established
 
-Idea → Understand → Design → Implement → Test → Experiment → Measure → Evaluate → Improve → Commit → Next Idea
+- Reliable bottleneck detection across a representative real-world benchmark
+- Measured cost savings, ROI, or operational improvements
+- Autonomous execution or integration with live production systems
+- Robustness and quality across all providers, models, and process domains
+- Production readiness under load
 
----
+## Development principles
 
-TECHNOLOGY
+- Ground claims in code, tests, and measured results.
+- Treat model-generated conclusions as hypotheses until validated.
+- Keep input limits, output validation, and safe error handling.
+- Prefer reproducible experiments over unsupported performance claims.
+- Add capabilities incrementally and document what is actually implemented.
 
-Overdrive combines different approaches depending on the problem:
+## License
 
-- AI and machine learning
-- Large language models
-- Autonomous agents
-- Classical algorithms and search
-- Optimization and graph algorithms
-- Statistical methods and simulation
-- Data processing and evaluation systems
+Apache License 2.0 — see [LICENSE](LICENSE).
 
-Not every problem requires an AI model. The right method is chosen per problem.
+## Author
 
----
-
-LONG-TERM DIRECTION
-
-The goal is a general-purpose intelligence and optimization platform for complex systems.
-
-Understand → Investigate → Detect → Explain → Generate Solutions → Optimize → Plan → Execute → Evaluate → Learn → Improve
-
-The system should stay:
-
-- Reliable
-- Testable
-- Interpretable
-- Reproducible
-- Measurably better over time
-- Under controlled complexity
-
----
-
-CURRENT STATUS
-
-Active Development — Planning Phase.
-
-The implementation grows progressively as new capabilities and experiments are developed. The repository reflects what has actually been built, not what is planned.
-
-Current reality: README and LICENSE only.
-Next milestone: First working core module.
-
----
-
-GUIDING PRINCIPLE
-
-Investigate complexity. Understand systems. Find what can be improved. Develop actionable solutions. Learn from the results.
-
----
-
-Overdrive
-
-Investigate. Understand. Optimize. Act. Improve.
-
----
-
-LICENSE
-
-Apache License 2.0. See LICENSE for full terms.
-
----
-
-Author: Dharavath Satvik
-
-
----
-
-## AI-maintained project notes (secondary — 2026-11-13)
-
-This section supplements the maintainer-authored README above. The original text has been restored verbatim from Git-history baseline `a5cb229eab55c656f7adc6fb1561009b5901490f`; this addendum does not replace or certify the original claims.
-
-- The current source tree, runtime data and tests are the implementation source of truth. Roadmap items, draft PRs and AI-generated descriptions are not shipped features by themselves.
-- Preserve real and maintainer-provided data. Never silently substitute generated or placeholder data. Clearly label and isolate synthetic fixtures.
-- Mark unverified sources, identifiers, metrics, benchmark results and external claims as unknown/unverified rather than guessing.
-- Verify setup, execution, tests and public claims against the exact current commit before using this repository in a job, research or academic application.
-- See [MODEL_AUDIT_ROUTER.md](MODEL_AUDIT_ROUTER.md) for independent model review instructions and the merge gate.
-
----
-
-## Engineering Audit & Handover — 2026-11-17
-
-**Reviewed commit:** `45b6e72156c74973088d304e2cfeb82a8e639347` (`main`). Static inspection covered `app/main.py`, provider adapters, and API tests; tests were not executed.
-
-### Confirmed findings
-- The API implements bounded JSON validation (byte, nesting, and node limits), validates the model's JSON response against a Pydantic response schema, and returns generic provider errors rather than exposing provider exception details.
-- The reviewed tests include malformed/oversized input boundaries and invalid provider-output cases. These are valuable safeguards, but their passing status was not verified in this audit.
-- Provider adapters support multiple vendors; actual behavior still depends on configured credentials, model IDs, SDK versions, upstream availability, and provider-specific limits.
-- The current API analyzes a supplied process description/data payload. It does not by itself prove optimization outcomes in a live production workflow.
-
-### Next actions
-1. Run the complete test suite and CI on the reviewed commit; preserve the result and environment.
-2. Add provider-specific timeout/cancellation and retry policies with bounded budgets.
-3. Evaluate model recommendations against a human-reviewed process-analysis benchmark before publishing quality or ROI claims.
-
-**Verification status:** static source/test inspection only; tests, provider integrations, and real-world outcome quality remain unverified.
-
----
-
-## Examples Used
-- Finding bottlenecks in a delivery network
-- Optimizing resource allocation under competing objectives
-- Investigating a performance regression and measuring the effect of a proposed fix
+Dharavath Satvik
