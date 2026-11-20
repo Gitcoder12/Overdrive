@@ -1,5 +1,16 @@
 # Overdrive
 
+
+## Current Status / Current Version
+
+**Early API MVP — version not stated in README**
+
+**Implemented according to README:** FastAPI health and process-analysis endpoints; bounded request validation; configurable provider settings; structured model response validation; ranked bottleneck reports with hypotheses and proposed fixes.
+
+**Known limitations:** it does not execute changes in external systems. Schema validation does not establish that model-generated explanations, confidence values or ROI estimates are factually correct. Recommendations require human review and operational measurement.
+
+**Verification still required:** run the test suite and exercise each configured provider before claiming provider-level compatibility or production readiness.
+
 **An AI-assisted process-analysis API for investigating operational bottlenecks.**
 
 Overdrive accepts a process description and optional structured data, sends the bounded input to a configured language-model provider, and returns a validated, ranked list of candidate bottlenecks with root-cause hypotheses and proposed fixes.
